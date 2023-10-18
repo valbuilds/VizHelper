@@ -1,18 +1,22 @@
-local presetBadges = {}
+require "convert"
 
-inputAstonsTextTopLine = ffi.new("char[1024]", "")
-inputAstonsTextBottomLine1 = ffi.new("char[1024]", "")
-inputAstonsTextBottomLine2 = ffi.new("char[1024]", "")
-inputAstonsTextBox = ffi.new("char[1024]", "")
-inputAstonsBreakingTopLine = ffi.new("char[1024]", "")
-inputAstonsBreakingBottomLine1 = ffi.new("char[1024]", "")
-inputAstonsBreakingBottomLine2 = ffi.new("char[1024]", "")
-inputAstonsBreakingBox = ffi.new("bool[1]", false)
-inputAstonsBadgeProgrammeText = ffi.new("char[1024]", "")
-inputAstonsBadgeProgrammeBadgeColour = ffi.new("float[3]",{0.68,0,0})
-inputAstonsBadgeProgrammeTextColour = ffi.new("float[3]",{1,1,1})
-inputAstonsBadgeSocialsText = ffi.new("char[1024]", "")
-inputAstonsBadgeCreditsText = ffi.new("char[1024]", "")
+local presetBadges = {
+    {"ACROSS THE UK", bcolour = {.7,0,0,1}, tcolour = {1,1,1,1}}
+}
+
+local topLine = ffi.new("char[1024]", "")
+local bottomLine1 = ffi.new("char[1024]", "")
+local bottomLine2 = ffi.new("char[1024]", "")
+local box = ffi.new("char[1024]", "")
+local breakingTopLine = ffi.new("char[1024]", "")
+local breakingBottomLine1 = ffi.new("char[1024]", "")
+local breakingBottomLine2 = ffi.new("char[1024]", "")
+local breakingBox = ffi.new("bool[1]", false)
+local badgeProgrammeText = ffi.new("char[1024]", "")
+local badgeProgrammeBadgeColour = ffi.new("float[3]",{0.68,0,0})
+local badgeProgrammeTextColour = ffi.new("float[3]",{1,1,1})
+local badgeSocialsText = ffi.new("char[1024]", "")
+local badgeCreditsText = ffi.new("char[1024]", "")
 
 function buildAstonControlsMenu()
     if astonControlMenuOpen[0] then
@@ -36,22 +40,22 @@ function buildAstonControlsMenu()
             imgui.PopFont()
 
             imgui.Text("Top Line:*") imgui.SameLine()
-            imgui.InputText("###inputAstonsTextTopLine", inputAstonsTextTopLine, 1024)
+            imgui.InputText("###topLine", topLine, 1024)
             imgui.Text("Bottom Line (1/2):") imgui.SameLine()
-            imgui.InputText("###inputAstonsTextBottomLine1", inputAstonsTextBottomLine1, 1024)
+            imgui.InputText("###bottomLine1", bottomLine1, 1024)
             imgui.Text("Bottom Line (2/2):") imgui.SameLine()
-            imgui.InputText("###inputAstonsTextBottomLine2", inputAstonsTextBottomLine2, 1024)
+            imgui.InputText("###bottomLine2", bottomLine2, 1024)
             imgui.Text("Box Text:") imgui.SameLine()
-            imgui.InputText("###inputAstonsTextBottomLine2", inputAstonsTextBox, 1024)
+            imgui.InputText("###box", box, 1024)
 
             if imgui.Button("Show/Update Strap") then
-                if ffi.string(inputAstonsTextTopLine) == "" then
+                if ffi.string(topLine) == "" then
                     showerror = true
                     errorTitle = "Missing field!"
-                    errorMessage = "No value for 'inputAstonsTextTopLine'. Please fill out that field."
+                    errorMessage = "No value for 'topLine'. Please fill out that field."
                     return
                 end
-                client:send("headline", {Type = "ShowAstonsTextStrap", Text = ffi.string(inputAstonsTextTopLine).."\n"..ffi.string(inputAstonsTextBottomLine1).."\n"..ffi.string(inputAstonsTextBottomLine2), BoxText = ffi.string(inputAstonsTextBox)})
+                client:send("headline", {Type = "ShowAstonsTextStrap", Text = ffi.string(topLine).."\n"..ffi.string(bottomLine1).."\n"..ffi.string(bottomLine2), BoxText = ffi.string(box)})
             end
             imgui.SameLine()
             if imgui.Button("Hide Strap") then
@@ -66,13 +70,13 @@ function buildAstonControlsMenu()
             imgui.PopFont()
 
             imgui.Text("Top Line:*") imgui.SameLine()
-            imgui.InputText("###inputAstonsBreakingTopLine", inputAstonsBreakingTopLine, 1024)
+            imgui.InputText("###breakingTopLine", breakingTopLine, 1024)
             imgui.Text("Bottom Line (1/2):") imgui.SameLine()
-            imgui.InputText("###inputAstonsBreakingBottomLine1", inputAstonsBreakingBottomLine1, 1024)
+            imgui.InputText("###breakingBottomLine1", breakingBottomLine1, 1024)
             imgui.Text("Bottom Line (1/2):") imgui.SameLine()
-            imgui.InputText("###inputAstonsBreakingBottomLine2", inputAstonsBreakingBottomLine2, 1024)
+            imgui.InputText("###breakingBottomLine2", breakingBottomLine2, 1024)
 
-            imgui.Checkbox("'BREAKING' Box", inputAstonsBreakingBox)
+            imgui.Checkbox("'BREAKING' Box", breakingBox)
 
             if imgui.Button("Show/Update Strap") then
                 if ffi.string(inputAstonsBreakingStoryName) == "" then
@@ -82,7 +86,7 @@ function buildAstonControlsMenu()
                     return
                 end
 
-                client:send("headline", {Type = "ShowAstonsBreaking", Text = ffi.string(inputAstonsBreakingStoryName).."\n"..ffi.string(inputAstonsBreakingBottomLine1).."\n"..ffi.string(inputAstonsBreakingBottomLine2), Box = ffi.bool(inputAstonsBreakingBox)})
+                client:send("headline", {Type = "ShowAstonsBreaking", Text = ffi.string(breakingTopLine).."\n"..ffi.string(breakingBottomLine1).."\n"..ffi.string(breakingBottomLine2), Box = ffi.bool(breakingBox)})
             end
             imgui.SameLine()
             if imgui.Button("Hide Strap") then
@@ -98,14 +102,14 @@ function buildAstonControlsMenu()
             if imgui.BeginTabBar("Badges") then
                 if imgui.BeginTabItem("Programme Badge") then
                     imgui.Text("Badge Text") imgui.SameLine()
-                    imgui.InputText("###inputAstonsBadgeProgrammeText", inputAstonsBadgeProgrammeText, 1024)
+                    imgui.InputText("###badgeProgrammeText", badgeProgrammeText, 1024)
                     imgui.Text("Badge Colour") imgui.SameLine()
-                    imgui.ColorEdit3("###inputAstonsBadgeProgrammeBadgeColour", inputAstonsBadgeProgrammeBadgeColour, imgui.love.ColorEditFlags("None"))
+                    imgui.ColorEdit3("###badgeProgrammeBadgeColour", badgeProgrammeBadgeColour, imgui.love.ColorEditFlags("None"))
                     imgui.Text("Text Colour") imgui.SameLine()
-                    imgui.ColorEdit3("###inputAstonsBadgeProgrammeTextColour", inputAstonsBadgeProgrammeTextColour, imgui.love.ColorEditFlags("None"))
+                    imgui.ColorEdit3("###badgeProgrammeTextColour", badgeProgrammeTextColour, imgui.love.ColorEditFlags("None"))
 
                     if imgui.Button("Set Badge") then
-                        client:send("headline", {Type = "SetAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({inputAstonsBadgeProgrammeTextColour[0], inputAstonsBadgeProgrammeTextColour[1], inputAstonsBadgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({inputAstonsBadgeProgrammeBadgeColour[0], inputAstonsBadgeProgrammeBadgeColour[1], inputAstonsBadgeProgrammeBadgeColour[2]})})
+                        client:send("headline", {Type = "SetAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
                     end
                     imgui.SameLine()
                     if imgui.Button("Remove Badge") then
@@ -113,7 +117,7 @@ function buildAstonControlsMenu()
                     end
 
                     if imgui.Button("Show Badge") then
-                        client:send("headline", {Type = "ShowAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({inputAstonsBadgeProgrammeTextColour[0], inputAstonsBadgeProgrammeTextColour[1], inputAstonsBadgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({inputAstonsBadgeProgrammeBadgeColour[0], inputAstonsBadgeProgrammeBadgeColour[1], inputAstonsBadgeProgrammeBadgeColour[2]})})
+                        client:send("headline", {Type = "ShowAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
                     end
                     imgui.SameLine()
                     if imgui.Button("Hide Badge") then
@@ -133,16 +137,16 @@ function buildAstonControlsMenu()
 
                             if imgui.Selectable_Bool(v[1].."###"..i, selected) then
                                 presetBadgeSelected = i
-                                inputAstonsBadgeProgrammeText = ffi.new("char[1024]", v[1])
-                                inputAstonsBadgeProgrammeTextColour[0] = v.tcolor[1]
-                                inputAstonsBadgeProgrammeTextColour[1] = v.tcolor[2]
-                                inputAstonsBadgeProgrammeTextColour[2] = v.tcolor[3]
-                                inputAstonsBadgeProgrammeBadgeColour[0] = v.bcolor[1]
-                                inputAstonsBadgeProgrammeBadgeColour[1] = v.bcolor[2]
-                                inputAstonsBadgeProgrammeBadgeColour[2] = v.bcolor[3]
+                                badgeProgrammeText = ffi.new("char[1024]", v[1])
+                                badgeProgrammeTextColour[0] = v.tcolour[1]
+                                badgeProgrammeTextColour[1] = v.tcolour[2]
+                                badgeProgrammeTextColour[2] = v.tcolour[3]
+                                badgeProgrammeBadgeColour[0] = v.bcolour[1]
+                                badgeProgrammeBadgeColour[1] = v.bcolour[2]
+                                badgeProgrammeBadgeColour[2] = v.bcolour[3]
                             end
                             imgui.SameLine()
-                            imgui.PushStyleColor_Vec4(imgui.ImGuiCol_ChildBg, imgui.ImVec4_Float(v.bcolor[1], v.bcolor[2], v.bcolor[3], 1))
+                            imgui.PushStyleColor_Vec4(imgui.ImGuiCol_ChildBg, imgui.ImVec4_Float(v.bcolour[1], v.bcolour[2], v.bcolour[3], 1))
                                 imgui.BeginChild_Str("###programBadgeColExample"..i, imgui.ImVec2_Float(30,18))
                                 imgui.EndChild()
                             imgui.PopStyleColor()
@@ -150,7 +154,7 @@ function buildAstonControlsMenu()
                     imgui.EndListBox()
 
                     if imgui.Button("Save badge") then
-                        table.insert(presetBadges, {ffi.string(inputAstonsBadgeProgrammeText), tcolor = {inputAstonsBadgeProgrammeTextColour[0], inputAstonsBadgeProgrammeTextColour[1], inputAstonsBadgeProgrammeTextColour[2]}, bcolor = {inputAstonsBadgeProgrammeBadgeColour[0], inputAstonsBadgeProgrammeBadgeColour[1], inputAstonsBadgeProgrammeBadgeColour[2]}})
+                        table.insert(presetBadges, {ffi.string(badgeProgrammeText), tcolour = {inputAstonsBadgeProgrammeTextColour[0], inputAstonsBadgeProgrammeTextColour[1], inputAstonsBadgeProgrammeTextColour[2]}, bcolour = {inputAstonsBadgeProgrammeBadgeColour[0], inputAstonsBadgeProgrammeBadgeColour[1], inputAstonsBadgeProgrammeBadgeColour[2]}})
                     end
                     imgui.SameLine()
                     if imgui.Button("Remove selected badge") then
@@ -162,9 +166,9 @@ function buildAstonControlsMenu()
                 end
                 if imgui.BeginTabItem("Other badges") then
                     imgui.Text("Socials badge:") imgui.SameLine()
-                    imgui.InputText("###inputAstonsBadgeSocialsText", inputAstonsBadgeSocialsText, 1024) imgui.SameLine()
+                    imgui.InputText("###badgeSocialsText", badgeSocialsText, 1024) imgui.SameLine()
                     if imgui.Button("Show") then
-                        client:send("headline", {Type = "ShowAstonsSocialsBadge", Text = ffi.string(inputAstonsBadgeSocialsText)})
+                        client:send("headline", {Type = "ShowAstonsSocialsBadge", Text = ffi.string(badgeSocialsText)})
                     end
                     imgui.SameLine()
                     if imgui.Button("Hide") then
@@ -172,9 +176,9 @@ function buildAstonControlsMenu()
                     end
 
                     imgui.Text("Credits badge:") imgui.SameLine()
-                    imgui.InputText("###inputAstonsBadgeCreditsText", inputAstonsBadgeCreditsText, 1024) imgui.SameLine()
+                    imgui.InputText("###badgeCreditsText", badgeCreditsText, 1024) imgui.SameLine()
                     if imgui.Button("Show") then
-                        client:send("headline", {Type = "ShowAstonsCreditsBadge", Text = ffi.string(inputAstonsBadgeCreditsText)})
+                        client:send("headline", {Type = "ShowAstonsCreditsBadge", Text = ffi.string(badgeCreditsText)})
                     end
                     imgui.SameLine()
                     if imgui.Button("Hide") then
