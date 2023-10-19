@@ -19,13 +19,13 @@ def build():
         var.showPlayoutControls = True
 
     if imgui.button("Branding", 100, 100):
-        ...
+        var.showBrandingControls = True
     imgui.same_line()
-    if imgui.button("Ticker", 100, 100):
-        ...
+    if imgui.button("Identity", 100, 100):
+        var.showIdentityControls = True
     imgui.same_line()
     if imgui.button("Automation", 100, 100):
-        ...
+        var.showAutomationControls = True
     
 
     imgui.end()
