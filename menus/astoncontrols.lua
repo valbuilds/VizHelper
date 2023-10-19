@@ -79,10 +79,10 @@ function buildAstonControlsMenu()
             imgui.Checkbox("'BREAKING' Box", breakingBox)
 
             if imgui.Button("Show/Update Strap") then
-                if ffi.string(inputAstonsBreakingStoryName) == "" then
+                if ffi.string(breakingTopLine) == "" then
                     showError = true
                     errorTitle = "You missed a field!"
-                    errorMessage = "No value for 'inputAstonsBreakingStoryName'. Please fill out that field."
+                    errorMessage = "No value for 'breakingTopLine'. Please fill out that field."
                     return
                 end
 
@@ -109,7 +109,7 @@ function buildAstonControlsMenu()
                     imgui.ColorEdit3("###badgeProgrammeTextColour", badgeProgrammeTextColour, imgui.love.ColorEditFlags("None"))
 
                     if imgui.Button("Set Badge") then
-                        client:send("headline", {Type = "SetAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
+                        client:send("headline", {Type = "SetAstonsProgrammeBadge", Text = ffi.string(badgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
                     end
                     imgui.SameLine()
                     if imgui.Button("Remove Badge") then
@@ -117,7 +117,7 @@ function buildAstonControlsMenu()
                     end
 
                     if imgui.Button("Show Badge") then
-                        client:send("headline", {Type = "ShowAstonsProgrammeBadge", Text = ffi.string(inputAstonsBadgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
+                        client:send("headline", {Type = "ShowAstonsProgrammeBadge", Text = ffi.string(badgeProgrammeText), TextColour = convertTableToCondensedString({badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}), BackgroundColour = convertTableToCondensedString({badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]})})
                     end
                     imgui.SameLine()
                     if imgui.Button("Hide Badge") then
@@ -127,7 +127,7 @@ function buildAstonControlsMenu()
                     imgui.PushFont(title)
                     imgui.Text("Saved badges")
                     imgui.PopFont()
-                    imgui.BeginListBox("###inputAstonsSavedProgrammeBadges",imgui.ImVec2_Float(300, 80))
+                    imgui.BeginListBox("###savedProgrammeBadges",imgui.ImVec2_Float(300, 80))
                         ---@diagnostic disable-next-line: param-type-mismatch
                         for i, v in ipairs(presetBadges) do
                             local selected = false
@@ -154,7 +154,7 @@ function buildAstonControlsMenu()
                     imgui.EndListBox()
 
                     if imgui.Button("Save badge") then
-                        table.insert(presetBadges, {ffi.string(badgeProgrammeText), tcolour = {inputAstonsBadgeProgrammeTextColour[0], inputAstonsBadgeProgrammeTextColour[1], inputAstonsBadgeProgrammeTextColour[2]}, bcolour = {inputAstonsBadgeProgrammeBadgeColour[0], inputAstonsBadgeProgrammeBadgeColour[1], inputAstonsBadgeProgrammeBadgeColour[2]}})
+                        table.insert(presetBadges, {ffi.string(badgeProgrammeText), tcolour = {badgeProgrammeTextColour[0], badgeProgrammeTextColour[1], badgeProgrammeTextColour[2]}, bcolour = {badgeProgrammeBadgeColour[0], badgeProgrammeBadgeColour[1], badgeProgrammeBadgeColour[2]}})
                     end
                     imgui.SameLine()
                     if imgui.Button("Remove selected badge") then
