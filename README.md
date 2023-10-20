@@ -2,7 +2,7 @@
 
 **This is a fork of [playsamay4's VizHelper](https://github.com/playsamay4/VizHelper).**
 
-I've remade the program from scrath with Python using [Pygame](https://github.com/pygame/pygame) and [pyimgui](https://github.com/pyimgui/pyimgui) instead of Lua using [LÖVE](https://github.com/love2d/love) and [cimgui](https://github.com/cimgui/cimgui).
+I've remade the program from scratch with Python using [Pygame](https://github.com/pygame/pygame) and [pyimgui](https://github.com/pyimgui/pyimgui) instead of Lua using [LÖVE](https://github.com/love2d/love) and [cimgui](https://github.com/cimgui/cimgui).
 
 ## installation
 
